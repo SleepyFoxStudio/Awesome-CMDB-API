@@ -23,6 +23,16 @@ namespace Api
                         ValidateAudience = false
                     };
                 });
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("https://localhost:5003")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
 
             // adds an authorization policy to make sure the token is for scope 'api1'
             services.AddAuthorization(options =>
@@ -38,6 +48,8 @@ namespace Api
         public void Configure(IApplicationBuilder app)
         {
             app.UseRouting();
+
+            app.UseCors("default");
 
             app.UseAuthentication();
             app.UseAuthorization();
