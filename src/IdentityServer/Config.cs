@@ -53,6 +53,26 @@ namespace IdentityServer
                         IdentityServerConstants.StandardScopes.Profile,
                         "api1"
                     }
+                },
+                // JavaScript Client
+                new Client
+                {
+                    ClientId = "react-js",
+                    ClientName = "React JavaScript Client",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireClientSecret = false,
+                    
+                    RedirectUris =           { "http://localhost:3000/authentication/callback", "http://localhost:3000/authentication/silent_callback" },
+                    PostLogoutRedirectUris = { "http://localhost:3000" },
+                    AllowedCorsOrigins =     { "http://localhost:3000" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "api1"
+                    }
                 }
             };
 
@@ -61,6 +81,7 @@ namespace IdentityServer
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+                new IdentityResources.Email()
             };
     }
 }

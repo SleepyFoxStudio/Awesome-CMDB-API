@@ -5,6 +5,11 @@
 # Json Web Token
 tempkey.jwk
 
+# Backup files
+*.bak
+
+
+identity.db
 
 # User-specific files
 *.suo
