@@ -2,12 +2,16 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
 using IdentityServer.Data;
 using IdentityServer.Models;
+using IdentityServer.Services;
+using IdentityServer4.Configuration;
 using IdentityServerHost.Quickstart.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,19 +34,33 @@ namespace IdentityServer
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = true;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
             
             services.AddControllersWithViews();
 
-            var builder = services.AddIdentityServer()
+            services.AddRazorPages();
+
+            services.AddIdentityServer(options =>
+                {
+                    options.Events.RaiseErrorEvents = true;
+                    options.Events.RaiseInformationEvents = true;
+                    options.Events.RaiseFailureEvents = true;
+                    options.Events.RaiseSuccessEvents = true;
+                    options.UserInteraction.LoginUrl = "/Account/Login";
+                    options.UserInteraction.LogoutUrl = "/Account/Logout";
+                })
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddInMemoryIdentityResources(Config.IdentityResources)
                 .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryClients(Config.Clients);
+                .AddInMemoryClients(Config.Clients)
+                .AddDeveloperSigningCredential();
 
-            builder.AddDeveloperSigningCredential();
+            services.AddSingleton<IEmailSender, EmailSender>();
         }
 
         public void Configure(IApplicationBuilder app)
@@ -58,6 +76,7 @@ namespace IdentityServer
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapRazorPages();
             });
         }
     }

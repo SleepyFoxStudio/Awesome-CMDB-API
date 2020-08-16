@@ -43,6 +43,11 @@
                             }
                             <button class="btn btn-primary" name="button" value="login">Login</button>
                             <button class="btn btn-secondary" name="button" value="cancel">Cancel</button>
+                            <div class="form-group">
+                                <p>
+                                    <a asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                                </p>
+                            </div>
                         </form>
                     </div>
                 </div>
