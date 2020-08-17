@@ -9,6 +9,10 @@ namespace Api.Controllers
     [Route("accountSummary")]
     public class AccountSummaryController : ControllerBase
     {
+        /// <summary>
+        /// Get the account summary of a logged on user.
+        /// </summary>
+        /// <returns>AwesomeAccountSummary</returns>
         [HttpGet]
         public IActionResult Get()
         {
