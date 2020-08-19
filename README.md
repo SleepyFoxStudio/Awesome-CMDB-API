@@ -32,11 +32,11 @@ This solution contains the following projects
 * select which projects to run by following these steps
   * Right click on **properties** of the solution **Awesome-CMDB-API**
 
-![Example server created](ReadMeFiles/rightclickproperties.JPG)
+![Set solution properties](ReadMeFiles/rightclickproperties.JPG)
 
   * Select the projects you want to run (details of each project above)
 
-![Example server created](ReadMeFiles/startupProject.png)
+![Set startup projects](ReadMeFiles/startupProject.png)
 
 ### Coding styles
 
