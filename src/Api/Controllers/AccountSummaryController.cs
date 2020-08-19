@@ -10,7 +10,7 @@ namespace Api.Controllers
     public class AccountSummaryController : ControllerBase
     {
         /// <summary>
-        /// Get the account summary of a logged on user.
+        /// Get the account summary listing accounts and username etc.
         /// </summary>
         /// <returns>AwesomeAccountSummary</returns>
         [HttpGet]
