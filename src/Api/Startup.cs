@@ -3,8 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
+using System.Security.Principal;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Marten;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -12,6 +25,12 @@ namespace Api
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -43,16 +62,21 @@ namespace Api
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddAuthentication("Bearer")
-                .AddJwtBearer("Bearer", options =>
-                {
-                    options.Authority = "https://localhost:5001";
+            #region Marten setup
 
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateAudience = false
-                    };
-                });
+            var connectionString = Configuration.GetConnectionString("AwesomeInfraDatabase");
+            // By only the connection string
+            services.AddMarten(connectionString)
+
+            // Spin up the DocumentStore right this second!
+            .InitializeStore();
+            #endregion
+
+
+            services.Configure<AccessKeyAuthenticationOptions>(AccessKeyAuthenticationHandler.DefaultSchemeName, Configuration.GetSection("Authentication"));
+            services.AddAuthentication(AccessKeyAuthenticationHandler.DefaultSchemeName)
+                .AddScheme<AccessKeyAuthenticationOptions, AccessKeyAuthenticationHandler>(AccessKeyAuthenticationHandler.DefaultSchemeName, null);
+                
             services.AddCors(options =>
             {
                 // this defines a CORS policy called "default"
@@ -67,10 +91,10 @@ namespace Api
             // adds an authorization policy to make sure the token is for scope 'api1'
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("ApiScope", policy =>
+                options.AddPolicy("ApiAuthorization", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("scope", "api1");
+                    //policy.RequireClaim("scope", "api1");
                 });
             });
         }
@@ -98,8 +122,65 @@ namespace Api
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers(); //.RequireAuthorization("ApiScope");
+                endpoints.MapControllers().RequireAuthorization("ApiAuthorization");
             });
         }
+    }
+
+    public static class AccessKeyIdentityExtensions
+    {
+        public static string GetAccountId(this ClaimsPrincipal user)
+        {
+            return user.FindFirstValue(AccessKeyAuthenticationHandler.AccountIdClaimName);
+        }
+    }
+
+    public class AccessKeyAuthenticationHandler : AuthenticationHandler<AccessKeyAuthenticationOptions>
+    {
+        public static string AccountIdClaimName { get; } = "AccountId";
+
+        public static string DefaultSchemeName { get; } = "AccessKey";
+
+        public static string AuthenticationType { get; } = "AccessKey";
+
+        private static readonly string AccessKeyHeaderName  = "AccessKey";
+        private static readonly string AccessSecretHeaderName = "AccessSecret";
+
+
+
+        public AccessKeyAuthenticationHandler(IOptionsMonitor<AccessKeyAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
+            : base(options, logger, encoder, clock)
+        {
+        }
+
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+        {
+            if (!Request.Headers.TryGetValue(AccessKeyHeaderName, out StringValues accessKey) && !Options.Bypass)
+            {
+                return Task.FromResult(AuthenticateResult.Fail($"{AccessKeyHeaderName} header missing."));
+            }
+
+            if (!Request.Headers.TryGetValue(AccessSecretHeaderName, out StringValues accessSecret) && !Options.Bypass)
+            {
+                return Task.FromResult(AuthenticateResult.Fail($"{AccessSecretHeaderName} header missing."));
+            }
+
+            if ((accessKey != Options.StaticAccessKey || accessSecret != Options.StaticAccessSecret) && !Options.Bypass)
+            {
+                return Task.FromResult(AuthenticateResult.Fail("The access key or secret is not correct."));
+            }
+            
+            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new [] { new Claim(AccountIdClaimName, Options.StaticAccountId) }, AuthenticationType));
+
+            return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(claimsPrincipal, Scheme.Name)));
+        }
+    }
+
+    public class AccessKeyAuthenticationOptions : AuthenticationSchemeOptions
+    {
+        public bool Bypass { get; set; }
+        public string StaticAccessKey { get; set; }
+        public string StaticAccessSecret { get; set; }
+        public string StaticAccountId { get; set; }
     }
 }

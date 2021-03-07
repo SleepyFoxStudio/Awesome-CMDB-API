@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Marten;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -9,6 +10,13 @@ namespace Api.Controllers
     [Route("accountSummary")]
     public class AccountSummaryController : ControllerBase
     {
+        private readonly IDocumentStore _documentStore;
+
+        public AccountSummaryController(IDocumentStore documentStore)
+        {
+            _documentStore = documentStore;
+        }
+
         /// <summary>
         /// Get the account summary listing accounts and username etc.
         /// </summary>
@@ -16,26 +24,30 @@ namespace Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var dummyAccountSummary = new AwesomeAccountSummary {User = "Mr Joe Smith"};
-            dummyAccountSummary.Accounts.Add(new AwesomeAccount
+
+            using (var session = _documentStore.OpenSession())
             {
-                Name = "Test account 1",
-                Id = "i-0000000001",
-                DataCentreType = "AWS"
-            });
-            dummyAccountSummary.Accounts.Add(new AwesomeAccount
+                return new JsonResult(session
+                    .Query<AwesomeAccount>()
+                    .Where(x => x.AccountId == User.GetAccountId()));
+            }
+        }
+
+
+        /// <summary>
+        /// Sets the account summary listing accounts and username etc.
+        /// </summary>
+        [HttpPost]
+        public IActionResult Post(AwesomeAccount awesomeAccount)
+        {
+            awesomeAccount.AccountId = User.GetAccountId();
+            using (var session = _documentStore.LightweightSession())
             {
-                Name = "Test account 2",
-                Id = "i-0000000002",
-                DataCentreType = "AWS"
-            });
-            dummyAccountSummary.Accounts.Add(new AwesomeAccount
-            {
-                Name = "Test account 3",
-                Id = "i-0000000003",
-                DataCentreType = "VMWare"
-            });
-            return new JsonResult(dummyAccountSummary);
+                session.Store(awesomeAccount);
+                session.SaveChanges();
+            }
+
+            return Ok();
         }
     }
 
@@ -48,9 +60,15 @@ namespace Api.Controllers
 
     public class AwesomeAccount
     {
+        private string _accountId;
         public string Name { get; set; }
         public string Id { get; set; }
         public string DataCentreType { get; set; }
+
+
+        public string AccountId { get; set; }
+
+     
     }
 
 }
