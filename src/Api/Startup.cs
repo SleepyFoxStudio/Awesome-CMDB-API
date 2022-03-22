@@ -9,7 +9,6 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Marten;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.SignalR;
@@ -62,15 +61,6 @@ namespace Api
                 c.IncludeXmlComments(xmlPath);
             });
 
-            #region Marten setup
-
-            var connectionString = Configuration.GetConnectionString("AwesomeInfraDatabase");
-            // By only the connection string
-            services.AddMarten(connectionString)
-
-            // Spin up the DocumentStore right this second!
-            .InitializeStore();
-            #endregion
 
 
             services.Configure<AccessKeyAuthenticationOptions>(AccessKeyAuthenticationHandler.DefaultSchemeName, Configuration.GetSection("Authentication"));

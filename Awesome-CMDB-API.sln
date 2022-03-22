@@ -1,17 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{649E55EF-11D0-4424-91D9-A4047824F230}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer", "src\IdentityServer\IdentityServer.csproj", "{AF94698B-895D-448F-A5BE-CB75AC6DBA1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "src\IdentityServer\IdentityServer.csproj", "{AF94698B-895D-448F-A5BE-CB75AC6DBA1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\Api\Api.csproj", "{BFDD64BF-0B42-482C-8090-7070464C50C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "src\Api\Api.csproj", "{BFDD64BF-0B42-482C-8090-7070464C50C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "src\Client\Client.csproj", "{E6A763EB-4324-40D3-9E1B-5332BD567D91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "src\Client\Client.csproj", "{E6A763EB-4324-40D3-9E1B-5332BD567D91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavaScriptClient", "src\JavaScriptClient\JavaScriptClient.csproj", "{C885D7DA-6130-41B6-B469-2B37ED51B95E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JavaScriptClient", "src\JavaScriptClient\JavaScriptClient.csproj", "{C885D7DA-6130-41B6-B469-2B37ED51B95E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Awesome-CMDB-DataAccess-Models", "..\Awesome-CMDB-Collector\Awesome-CMDB-DataAccess-Models\Awesome-CMDB-DataAccess-Models.csproj", "{83833490-578C-41CF-8E17-3A98C506909F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{AF94698B-895D-448F-A5BE-CB75AC6DBA1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -74,11 +73,30 @@ Global
 		{C885D7DA-6130-41B6-B469-2B37ED51B95E}.Release|x64.Build.0 = Release|Any CPU
 		{C885D7DA-6130-41B6-B469-2B37ED51B95E}.Release|x86.ActiveCfg = Release|Any CPU
 		{C885D7DA-6130-41B6-B469-2B37ED51B95E}.Release|x86.Build.0 = Release|Any CPU
+		{83833490-578C-41CF-8E17-3A98C506909F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83833490-578C-41CF-8E17-3A98C506909F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83833490-578C-41CF-8E17-3A98C506909F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{83833490-578C-41CF-8E17-3A98C506909F}.Debug|x64.Build.0 = Debug|Any CPU
+		{83833490-578C-41CF-8E17-3A98C506909F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{83833490-578C-41CF-8E17-3A98C506909F}.Debug|x86.Build.0 = Debug|Any CPU
+		{83833490-578C-41CF-8E17-3A98C506909F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83833490-578C-41CF-8E17-3A98C506909F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83833490-578C-41CF-8E17-3A98C506909F}.Release|x64.ActiveCfg = Release|Any CPU
+		{83833490-578C-41CF-8E17-3A98C506909F}.Release|x64.Build.0 = Release|Any CPU
+		{83833490-578C-41CF-8E17-3A98C506909F}.Release|x86.ActiveCfg = Release|Any CPU
+		{83833490-578C-41CF-8E17-3A98C506909F}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AF94698B-895D-448F-A5BE-CB75AC6DBA1A} = {649E55EF-11D0-4424-91D9-A4047824F230}
 		{BFDD64BF-0B42-482C-8090-7070464C50C1} = {649E55EF-11D0-4424-91D9-A4047824F230}
 		{E6A763EB-4324-40D3-9E1B-5332BD567D91} = {649E55EF-11D0-4424-91D9-A4047824F230}
 		{C885D7DA-6130-41B6-B469-2B37ED51B95E} = {649E55EF-11D0-4424-91D9-A4047824F230}
+		{83833490-578C-41CF-8E17-3A98C506909F} = {649E55EF-11D0-4424-91D9-A4047824F230}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CB13818A-AB27-42DD-BE9A-6F8332F3C2CC}
 	EndGlobalSection
 EndGlobal
